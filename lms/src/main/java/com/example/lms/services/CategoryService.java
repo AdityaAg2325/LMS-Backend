@@ -8,6 +8,7 @@ import com.example.lms.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,15 +30,26 @@ public class CategoryService {
         return categoryOutDTO;
     }
 
-    public Page<CategoryOutDTO> getCategoriesPaginated(int pageNumber, int pageSize, String search){
-        Page<Category> page;
-        if(search!=null && !search.isEmpty()){
-            page = categoryRepository.findByNameContainingIgnoreCase(search, PageRequest.of(pageNumber,pageSize));
-        } else {
-            page = categoryRepository.findAll(PageRequest.of(pageNumber,pageSize));
-        }
+//    public Page<CategoryOutDTO> getCategoriesPaginated(int pageNumber, int pageSize, String search){
+//        Page<Category> page;
+//        if(search!=null && !search.isEmpty()){
+//            page = categoryRepository.findByNameContainingIgnoreCase(search, PageRequest.of(pageNumber,pageSize));
+//        } else {
+//            page = categoryRepository.findAll(PageRequest.of(pageNumber,pageSize));
+//        }
+//
+//        return page.map(category -> categoryMapper.toDTO(category));
+//    }
 
-        return page.map(category -> categoryMapper.toDTO(category));
+    public Page<CategoryOutDTO> getCategoriesPaginated(Pageable pageable, String search){
+        Page<Category> page;
+        Page<Category> categoryPage;
+        if (search != null && !search.isEmpty()) {
+            categoryPage = categoryRepository.findByNameContainingIgnoreCase(search, pageable);
+        } else {
+            categoryPage = categoryRepository.findAll(pageable);
+        }
+        return categoryPage.map(category -> categoryMapper.toDTO(category));
     }
 
     public Long countAllCategories(){
@@ -53,12 +65,11 @@ public class CategoryService {
         return categoryDTOs;
     }
 
-    public CategoryOutDTO deleteCategoryById(Long id){
+    public void deleteCategoryById(Long id){
         Category category = categoryRepository.findCategoryById(id);
 
         categoryRepository.deleteById(category.getId());
-        CategoryOutDTO categoryOutDTO = categoryMapper.toDTO(category);
-        return categoryOutDTO;
+       // CategoryOutDTO categoryOutDTO = categoryMapper.toDTO(category);
     }
 
     public CategoryOutDTO updateCategoryById(Long id, CategoryInDTO categoryInDTO){

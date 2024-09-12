@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Data @Table(name = "issuances") @Entity
+@Data @Table(name = "issuance") @Entity
 @NoArgsConstructor @AllArgsConstructor
 public class Issuance {
 
@@ -27,18 +27,22 @@ public class Issuance {
     @Column(name = "issue_time", nullable = false)
     private LocalDateTime issueTime;
 
-    @Column(name = "return_time")
-    private LocalDateTime returnTime;
+    @Column(name = "expected_return_time")
+    private LocalDateTime expectedReturnTime;
+
+    @Column(name = "actual_return_time")
+    private LocalDateTime actualReturnTime;
 
     @Column(nullable = false)
     private String status;
 
-    @Column(nullable = false)
+    @Column(name = "issuance_type", nullable = false)
     private String type;
 
     @PrePersist
     protected void onCreate(){
         this.issueTime = LocalDateTime.now();
+        this.status= "Issued";
     }
 }
 

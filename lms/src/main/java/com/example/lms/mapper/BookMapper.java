@@ -14,6 +14,7 @@ public class BookMapper {
         book.setTitle(inDTO.getTitle());
         book.setAuthor(inDTO.getAuthor());
         book.setQuantity(inDTO.getQuantity());
+        book.setCurrQty(inDTO.getQuantity());
         book.setImage(inDTO.getImage());
         book.setCategory(category);
         return book;
@@ -25,6 +26,7 @@ public class BookMapper {
         outDTO.setTitle(book.getTitle());
         outDTO.setAuthor(book.getAuthor());
         outDTO.setQuantity(book.getQuantity());
+        outDTO.setCurrQty(book.getCurrQty());
         outDTO.setImage(book.getImage());
         outDTO.setCategoryName(book.getCategory().getName());
         return outDTO;

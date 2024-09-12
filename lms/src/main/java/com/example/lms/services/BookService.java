@@ -7,6 +7,7 @@ import com.example.lms.dto.UserOutDTO;
 import com.example.lms.entity.Book;
 import com.example.lms.entity.Category;
 import com.example.lms.entity.User;
+import com.example.lms.exception.ResourceNotFoundException;
 import com.example.lms.mapper.BookMapper;
 import com.example.lms.repository.BooksRepository;
 import com.example.lms.repository.CategoryRepository;
@@ -38,7 +39,9 @@ public class BookService {
     }
 
     public BookOutDTO getBookByTitle(String title){
-        Book book = booksRepository.findBookByTitle(title);
+        Book book = booksRepository.findBookByTitle(title).orElseThrow(
+                () -> new ResourceNotFoundException("Book", "title", title)
+        );;
 
         BookOutDTO bookOutDTO = bookMapper.toDTO(book);
         return bookOutDTO;
@@ -88,6 +91,9 @@ public class BookService {
         Book book = booksRepository.findBookById(id);
 
         book.setQuantity(bookInDTO.getQuantity());
+        book.setTitle(bookInDTO.getTitle());
+        book.setAuthor(bookInDTO.getAuthor());
+        book.setCurrQty(bookInDTO.getQuantity());
         Book updated = booksRepository.save(book);
 
         BookOutDTO bookOutDTO = bookMapper.toDTO(updated);

@@ -27,6 +27,7 @@ public class UserMapper {
         outDTO.setMobileNumber(user.getMobileNumber());
         outDTO.setEmail(user.getEmail());
         outDTO.setRole(user.getRole());
+        outDTO.setToken(null);
         return outDTO;
     }
 }

@@ -10,7 +10,6 @@ public class IssuanceInDTO {
 
     private Long userId;
     private Long bookId;
-    private LocalDateTime issueTime;
     private LocalDateTime returnTime;
     private String status;
     private String type;

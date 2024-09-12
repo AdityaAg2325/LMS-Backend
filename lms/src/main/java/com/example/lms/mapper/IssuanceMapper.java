@@ -15,8 +15,8 @@ public class IssuanceMapper {
         Issuance issuance = new Issuance();
         issuance.setUser(user);
         issuance.setBook(book);
-        issuance.setIssueTime(inDTO.getIssueTime());
         issuance.setStatus(inDTO.getStatus());
+        issuance.setExpectedReturnTime(inDTO.getReturnTime());
         issuance.setType(inDTO.getType());
         return issuance;
     }
@@ -27,7 +27,8 @@ public class IssuanceMapper {
         outDTO.setUser(UserMapper.toDTO(issuance.getUser()));
         outDTO.setBook(BookMapper.toDTO(issuance.getBook()));
         outDTO.setIssueTime(issuance.getIssueTime());
-        outDTO.setReturnTime(issuance.getReturnTime());
+        outDTO.setExpectedReturnTime(issuance.getExpectedReturnTime());
+        outDTO.setActualReturnTime(issuance.getActualReturnTime());
         outDTO.setStatus(issuance.getStatus());
         outDTO.setType(issuance.getType());
         return outDTO;

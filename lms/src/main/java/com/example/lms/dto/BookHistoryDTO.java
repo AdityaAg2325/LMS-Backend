@@ -1,19 +1,26 @@
 package com.example.lms.dto;
 
-import lombok.Data;
+import com.example.lms.entity.User;
+import lombok.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Data
-public class IssuanceOutDTO {
+@Getter @Setter @ToString
+@RequiredArgsConstructor
+public class BookHistoryDTO {
 
     private Long id;
-    private UserOutDTO user;
-    private BookOutDTO book;
+
+    private User user;
+
     private LocalDateTime issueTime;
+
     private LocalDateTime expectedReturnTime;
+
     private LocalDateTime actualReturnTime;
+
     private String status;
+
     private String type;
+
 }
