@@ -39,7 +39,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:5173/"));
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowedHeaders(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
@@ -56,32 +56,23 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/register").permitAll()
                         .requestMatchers("/api/current-user").authenticated()
 
+
 //                Category routes
-                        //.requestMatchers("/api/categories", "/api/category-count").permitAll()
-                        .requestMatchers( "/api/categories/**").permitAll()
-                        //.requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
+                        .requestMatchers( "/api/categories", "/api/categories/**").hasRole("ADMIN")
+
 
 //                Book routes
-//                        .requestMatchers( "/api/books/**").hasRole("ADMIN")
-                        .requestMatchers( "/api/books/**").permitAll()
-//                        .requestMatchers( "/api/book").hasRole("ADMIN")
-//                        .requestMatchers("/api/books", "/api/books/title-count","/api/books/total-count").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/book/**").permitAll()
+                        .requestMatchers("/api/books",  "/api/books/**").hasRole("ADMIN")
 
 
 //                User routes
-                        .requestMatchers( "/api/user/**").permitAll()
-//                        .requestMatchers( "/api/users").hasRole("ADMIN")
-//                        .requestMatchers( "/api/user-count").hasRole("ADMIN")
-//                        .requestMatchers( HttpMethod.GET, "/api/user/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers( "/api/users", "/api/user/**").hasRole("ADMIN")
+
 
 //                Issuance routes
-                        .requestMatchers("/api/issuances/**").permitAll()
-//                        .requestMatchers("/api/issuances").authenticated()
-//                        .requestMatchers("/api/users/active-count").hasRole("ADMIN")
-//                        .requestMatchers( HttpMethod.GET, "/api/issuance/**").hasAnyRole("ADMIN", "USER")
-
+                        .requestMatchers("/api/issuances/**").hasAnyRole("ADMIN", "USER")
+//                Stats
+                        .requestMatchers("/api/stats/**").hasRole("ADMIN")
 
         );
 

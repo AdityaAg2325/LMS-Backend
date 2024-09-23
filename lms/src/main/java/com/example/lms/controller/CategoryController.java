@@ -32,12 +32,11 @@ public class CategoryController {
     public ResponseEntity<Page<CategoryOutDTO>> getPaginatedCategories(@RequestParam(defaultValue = "0") int pageNumber,
                                                                        @RequestParam(defaultValue = "10") int pageSize,
                                                                        @RequestParam(defaultValue = "id") String sortBy,
-                                                                       @RequestParam(defaultValue = "asc") String sortDir,
+                                                                       @RequestParam(defaultValue = "desc") String sortDir,
                                                                        @RequestParam(required = false) String search
     ){
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.fromString(sortDir), sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getCategoriesPaginated(pageable, search));
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getCategoriesPaginated(pageNumber, pageSize, sortBy, sortDir, search));
     }
 
     @GetMapping("/{id}")

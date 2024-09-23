@@ -27,8 +27,9 @@ public class UserController {
     }
 
     @GetMapping("/paginatedUsers")
-    public ResponseEntity<Page<UserOutDTO>> getPaginatedUsers(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize,  @RequestParam String search){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsersPaginated(pageNumber, pageSize, search));
+    public ResponseEntity<Page<UserOutDTO>> getPaginatedUsers(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "id") String sortBy,
+                                                              @RequestParam(defaultValue = "desc") String sortDir,  @RequestParam String search){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsersPaginated(pageNumber, pageSize, sortBy, sortDir, search));
     }
 
     @GetMapping("/{mobileNumber}")

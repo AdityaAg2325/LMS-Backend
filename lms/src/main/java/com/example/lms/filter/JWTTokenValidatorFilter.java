@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +45,19 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid Token received!");
+                String message = e.getMessage();
+                if (message == null || message.isEmpty()) {
+                    message = "Invalid token received!";
+                }
+
+                String jsonResponse =
+                        String.format("{\"status\": %s, \"message\": \"%s\"}",
+                                HttpStatus.UNAUTHORIZED.value(),
+                                message);
+
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.getWriter().write(jsonResponse);
+                return;
             }
 
         }

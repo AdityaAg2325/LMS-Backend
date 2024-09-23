@@ -3,7 +3,6 @@ package com.example.lms.controller;
 import com.example.lms.constants.BookConstants;
 import com.example.lms.dto.BookInDTO;
 import com.example.lms.dto.BookOutDTO;
-import com.example.lms.dto.CategoryOutDTO;
 import com.example.lms.dto.ResponseDTO;
 import com.example.lms.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/books")
@@ -28,8 +26,10 @@ public class BooksController {
     }
 
     @GetMapping("/paginatedBooks")
-    public ResponseEntity<Page<BookOutDTO>> getPaginatedBooks(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(required = false) String search){
-        return ResponseEntity.status(HttpStatus.OK).body(bookService.getBooksPaginated(pageNumber, pageSize, search));
+    public ResponseEntity<Page<BookOutDTO>> getPaginatedBooks(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize,
+                                                              @RequestParam(defaultValue = "id") String sortBy,
+                                                              @RequestParam(defaultValue = "desc") String sortDir,@RequestParam(required = false) String search){
+        return ResponseEntity.status(HttpStatus.OK).body(bookService.getBooksPaginated(pageNumber, pageSize, sortBy, sortDir, search));
     }
 
     @GetMapping("/{id}")
@@ -58,11 +58,6 @@ public class BooksController {
         BookOutDTO bookOutDTO = bookService.createBook(bookInDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(HttpStatus.CREATED.toString(), BookConstants.BOOK_CREATE_MSG));
     }
-
-//    @GetMapping("/{categoryName}")
-//    public ResponseEntity<List<BookOutDTO>> getBooksByCategory(@PathVariable String categoryName) {
-//        return ResponseEntity.status(HttpStatus.OK).body(bookService.getBooksByCategory(categoryName));
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> updateBookById(@PathVariable Long id, @RequestBody BookInDTO bookInDTO){

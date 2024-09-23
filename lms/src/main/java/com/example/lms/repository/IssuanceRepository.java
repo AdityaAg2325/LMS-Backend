@@ -38,11 +38,16 @@ public interface IssuanceRepository extends JpaRepository<Issuance, Long> {
 
 //    ------------------------------------------------
 
-    Page<Issuance> findAllByUserId(Long id, Pageable pageable);
+    Page<Issuance> findByUserId(Long id, Pageable pageable);
 
     List<Issuance> findAllByExpectedReturnTimeBetweenAndStatus(LocalDateTime start, LocalDateTime end, String status);
 
-    Page<Issuance> findByBookContainingIgnoreCase(String book, Pageable pageable);
+
+    @Query("SELECT i FROM Issuance i WHERE LOWER(i.book.title) LIKE LOWER(CONCAT('%', :search, '%'))")
+    Page<Issuance> findByBookContainingIgnoreCase(@Param("search") String search, Pageable pageable);
+
+    @Query("SELECT i FROM Issuance i WHERE LOWER(i.user.name) LIKE LOWER(CONCAT('%', :search, '%'))")
+    Page<Issuance> findByUserNameContainingIgnoreCase(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT COUNT(DISTINCT i.user.id) FROM Issuance i WHERE i.status = :status AND i.type = :type")
     Long countDistinctUsersByStatusAndIssuanceType(@Param("status") String status, @Param("type") String type);
@@ -50,13 +55,6 @@ public interface IssuanceRepository extends JpaRepository<Issuance, Long> {
     @Query("SELECT COUNT(DISTINCT i.user.id) FROM Issuance i WHERE i.type = 'In house' AND i.status = 'Issued' AND i.issueTime BETWEEN :startOfDay AND :endOfDay")
     Long countDistinctUsersInLibraryToday(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 
-
-    Page<Issuance> findByUserContainingIgnoreCase(
-            String user,
-            Pageable pageable);
-
-
-    Page<Issuance> filterIssuances(Pageable pageable);
 
     boolean existsByBookCategoryIdAndStatus(Long categoryId, String status);
 

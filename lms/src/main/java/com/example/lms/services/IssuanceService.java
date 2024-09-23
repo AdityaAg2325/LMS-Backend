@@ -15,7 +15,6 @@ import com.example.lms.repository.UserRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -64,11 +63,14 @@ public class IssuanceService {
         Page<Issuance> issuancePage;
         if (search != null && !search.isEmpty()) {
             issuancePage = issuanceRepository.findByBookContainingIgnoreCase(search, pageable);
+            if (issuancePage.isEmpty()) {
+                issuancePage = issuanceRepository.findByUserNameContainingIgnoreCase(search, pageable);
+            }
         } else {
             issuancePage = issuanceRepository.findAll(pageable);
         }
 
-        return  issuancePage.map(issuance -> IssuanceMapper.toDTO(issuance));
+        return issuancePage.map(issuance -> IssuanceMapper.toDTO(issuance));
     }
 
     public Page<UserHistoryDTO> getUserHistory(Pageable pageable, String mobile) {
@@ -76,7 +78,7 @@ public class IssuanceService {
                 () -> new ResourceNotFoundException("User", "mobileNumber", mobile)
         );
 
-        Page<Issuance> issuancePage = issuanceRepository.findAllByUserId(
+        Page<Issuance> issuancePage = issuanceRepository.findByUserId(
                 user.getId(), pageable
         );
 
@@ -137,12 +139,10 @@ public class IssuanceService {
 
         Issuance savedIssuance = issuanceRepository.save(issuance);
 
-        String message = String.format("\nYou have issued the book '%s'\n" +
-                        "author '%s'\n" +
+        String message = String.format("\nYou have successfully issued the book '%s'\n" +
                         "From %s\n" +
                         "To %s",
                 savedIssuance.getBook().getTitle(),
-                savedIssuance.getBook().getAuthor(),
                 savedIssuance.getIssueTime().toLocalDate(),
                 savedIssuance.getExpectedReturnTime().toLocalDate());
 
@@ -186,9 +186,11 @@ public class IssuanceService {
         String oldSattus = issuance.getStatus();
         LocalDateTime oldIssueTime = issuance.getIssueTime();
         LocalDateTime oldExpReturnTime = issuance.getExpectedReturnTime();
+        LocalDateTime oldActualReturnTime = issuance.getActualReturnTime();
         String oldIssuanceType = issuance.getType();
 
         issuance = IssuanceMapper.toEntity(inDTO, issuance.getUser(), issuance.getBook());
+        issuance.setActualReturnTime(oldActualReturnTime);
 
         if (issuance.getExpectedReturnTime() == null) {
             issuance.setExpectedReturnTime(oldExpReturnTime);
@@ -223,79 +225,7 @@ public class IssuanceService {
         IssuanceOutDTO issuanceOutDTO = IssuanceMapper.toDTO(savedIssuance);
 
         return issuanceOutDTO;
-
-//        User user = userRepository.findById(inDTO.getUserId())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//        Book book = bookRepository.findById(inDTO.getBookId())
-//                .orElseThrow(() -> new RuntimeException("Book not found"));
-
-//        issuance.setUser(user);
-//        issuance.setBook(book);
-//        issuance.setIssueTime(inDTO.getIssueTime());
-
-
-//        issuance.setActualReturnTime(inDTO.getReturnTime());
-//        issuance.setStatus(inDTO.getStatus());
-//        issuance.setType(inDTO.getType());
-//
-//        issuance = issuanceRepository.save(issuance);
-//        return IssuanceMapper.toDTO(issuance);
     }
-
-//    public IssuanceOutDTO updateStatus(Long id, IssuanceInDTO issuanceInDTO) {
-//        Issuance issuance = issuanceRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Issuance not found"));
-//
-//        issuance.setStatus(issuanceInDTO.getStatus());
-//        issuance = issuanceRepository.save(issuance);
-//
-//        return IssuanceMapper.toDTO(issuance);
-//    }
-
-//    public List<IssuanceOutDTO> getAllIssuanceByUserId(Long userId) {
-//        List<Issuance> issuances = issuanceRepository.findAllByUserId(userId);
-//        return issuances.stream()
-//                .map(IssuanceMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<IssuanceOutDTO> getALlIssuancesByStatus(String status) {
-//        List<Issuance> issuances = issuanceRepository.findByStatus(status);
-//        return issuances.stream()
-//                .map(IssuanceMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<IssuanceOutDTO> getAllIssuancesByBookId(Long bookId) {
-//        List<Issuance> issuances = issuanceRepository.findAllByBookId(bookId);
-//        return issuances.stream()
-//                .map(IssuanceMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<IssuanceOutDTO> getAllIssuanceByMobile(String mobile) {
-//        User user = userRepository.findByMobileNumber(mobile).orElseThrow(() -> new RuntimeException("Issuance not found"));;
-//        return getAllIssuanceByUserId(user.getId());
-//    }
-//
-//    public List<IssuanceOutDTO> getAllIssuanceByIssueTime(LocalDateTime issueTime) {
-//        List<Issuance> issuances = issuanceRepository.findAllByIssueTime(issueTime);
-//        return issuances.stream()
-//                .map(IssuanceMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<IssuanceOutDTO> getAllIssuanceByReturnTime(LocalDateTime returnTime) {
-//        List<Issuance> issuances = issuanceRepository.findAllByActualReturnTime(returnTime);
-//        return issuances.stream()
-//                .map(IssuanceMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
-
-//    public Page<IssuanceOutDTO> getIssuances(int pageNumber, int pageSize){
-//        Page<Issuance> page = issuanceRepository.findAll(PageRequest.of(pageNumber,pageSize));
-//        return page.map(issuance -> issuanceMapper.toDTO(issuance));
-//    }
 
 
 

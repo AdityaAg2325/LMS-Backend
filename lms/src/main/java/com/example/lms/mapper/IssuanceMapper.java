@@ -26,9 +26,9 @@ public class IssuanceMapper {
         outDTO.setId(issuance.getId());
         outDTO.setUser(UserMapper.toDTO(issuance.getUser()));
         outDTO.setBook(BookMapper.toDTO(issuance.getBook()));
-        outDTO.setIssueTime(issuance.getIssueTime());
+         outDTO.setIssueTime(issuance.getIssueTime());
         outDTO.setExpectedReturnTime(issuance.getExpectedReturnTime());
-        outDTO.setActualReturnTime(issuance.getActualReturnTime());
+         outDTO.setActualReturnTime(issuance.getActualReturnTime());
         outDTO.setStatus(issuance.getStatus());
         outDTO.setType(issuance.getType());
         return outDTO;

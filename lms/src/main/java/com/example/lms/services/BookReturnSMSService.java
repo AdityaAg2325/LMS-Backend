@@ -29,9 +29,8 @@ public class BookReturnSMSService {
         for (Issuance issuance : dueTomorrow) {
             String message = String.format("\nReminder:\n" +
                             "Please return the book '%s'\n" +
-                            "Author '%s'\n"+
                             "by tomorrow (%s).",
-                    issuance.getBook().getTitle(), issuance.getBook().getAuthor(),
+                    issuance.getBook().getTitle(),
                     issuance.getExpectedReturnTime().toLocalDate());
             smsService.sendSms(issuance.getUser().getMobileNumber(), message);
         }

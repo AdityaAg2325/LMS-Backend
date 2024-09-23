@@ -28,7 +28,7 @@ public class IssuanceController {
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(required = false) String search
     ){
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.fromString(sortDir), sortBy);
@@ -59,37 +59,6 @@ public class IssuanceController {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(HttpStatus.OK.toString(), IssuanceConstants.ISSUANCE_UPDATE_MSG));
     }
 
-//    @PutMapping("/updateStatus/{id}")
-//    public ResponseEntity<IssuanceOutDTO> updateStatus(@PathVariable Long id, @RequestBody IssuanceInDTO issuanceInDTO) {
-//        return ResponseEntity.status(HttpStatus.OK).body(issuanceService.updateStatus(id, issuanceInDTO));
-//    }
-
-//    @GetMapping("/user/{userId}")
-//    public ResponseEntity<List<IssuanceOutDTO>> getAllIssuancesByUserId(@PathVariable Long userId) {
-//        return ResponseEntity.status(HttpStatus.OK).body(issuanceService.getAllIssuanceByUserId(userId));
-//    }
-//
-//    @GetMapping("/book/{bookId}")
-//    public ResponseEntity<List<IssuanceOutDTO>> getAllIssuancesByBookId(@PathVariable Long bookId) {
-//        return ResponseEntity.status(HttpStatus.OK).body(issuanceService.getAllIssuancesByBookId(bookId));
-//    }
-//
-//    @GetMapping("/mobile/{mobileNumber}")
-//    public ResponseEntity<List<IssuanceOutDTO>> getAllIssuancesByMobile(@PathVariable String mobileNumber) {
-//        return ResponseEntity.status(HttpStatus.OK).body(issuanceService.getAllIssuanceByMobile(mobileNumber));
-//    }
-//
-//    @GetMapping("/issue-time/{issueTime}")
-//    public ResponseEntity<List<IssuanceOutDTO>> getAllIssuancesByIssueTime(@PathVariable LocalDateTime issueTime) {
-//        return ResponseEntity.status(HttpStatus.OK).body(issuanceService.getAllIssuanceByIssueTime(issueTime));
-//    }
-//
-//    @GetMapping("/return-time/{returnTime}")
-//    public ResponseEntity<List<IssuanceOutDTO>> getAllIssuancesByReturnTime(@PathVariable LocalDateTime returnTime) {
-//        return ResponseEntity.status(HttpStatus.OK).body(issuanceService.getAllIssuanceByReturnTime(returnTime));
-//    }
-
-
 
     @GetMapping("/pageable")
     public ResponseEntity<Page<IssuanceOutDTO>> getAllIssuancesPageable (
@@ -107,29 +76,29 @@ public class IssuanceController {
 
     }
 
-    @GetMapping("/user/history/{mobile}")
-    public ResponseEntity<Page<UserHistoryDTO>> getUserHistory(
-            @PathVariable String mobile,
-            @RequestParam(required = false) Integer pageNumber,
-            @RequestParam(required = false) Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+@GetMapping("/user/history/{mobile}")
+public ResponseEntity<Page<UserHistoryDTO>> getUserHistory(
+        @PathVariable String mobile,
+        @RequestParam(defaultValue = "0") Integer pageNumber, // Provide default value
+        @RequestParam(defaultValue = "10") Integer pageSize,  // Provide default value
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "asc") String sortDir) {
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.fromString(sortDir), sortBy);
-        Page<UserHistoryDTO> userHistoryDTOPage = issuanceService.getUserHistory(
-                pageable, mobile
-        );
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.fromString(sortDir), sortBy);
 
-        return ResponseEntity.status(HttpStatus.OK).body(userHistoryDTOPage);
-    }
+    // Fetch the user history
+    Page<UserHistoryDTO> userHistoryDTOPage = issuanceService.getUserHistory(pageable, mobile);
+
+    return ResponseEntity.status(HttpStatus.OK).body(userHistoryDTOPage);
+}
+
 
     @GetMapping("/book/history/{id}")
     public ResponseEntity<Page<BookHistoryDTO>> getBookHistory(@PathVariable Long id,
-                                                               @RequestParam(required = false) Integer pageNumber,
-                                                               @RequestParam(required = false) Integer pageSize,
+                                                               @RequestParam(defaultValue = "0") Integer pageNumber,
+                                                               @RequestParam(defaultValue = "10") Integer pageSize,
                                                                @RequestParam(defaultValue = "id") String sortBy,
-                                                               @RequestParam(defaultValue = "asc") String sortDir,
-                                                               @RequestParam(required = false) String search) {
+                                                               @RequestParam(defaultValue = "asc") String sortDir) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.fromString(sortDir), sortBy);
         Page<BookHistoryDTO> bookHistoryDTOPage = issuanceService.getBookHistory(pageable, id);

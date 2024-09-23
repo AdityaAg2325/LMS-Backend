@@ -61,6 +61,5 @@ public class SMSService {
             System.err.println("Failed to send SMS: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 }

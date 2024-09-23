@@ -19,7 +19,7 @@ public class CustomBasicAuthenticationEntryPoint implements AuthenticationEntryP
                 : "Unauthorized";
         String path = request.getRequestURI();
 
-        response.setHeader("bookwise-error-reason", "Authentication failed");
+        response.setHeader("lms-error-reason", "Authentication failed");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json;charset=UTF-8");
 
