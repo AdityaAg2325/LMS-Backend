@@ -1,8 +1,10 @@
 package com.example.lms.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter @Getter
 public class BookOutDTO {
 
     private Long id;
@@ -14,6 +16,8 @@ public class BookOutDTO {
     private String image;
 
     private Long quantity;
+
+    private Long currQty;
 
     private String categoryName;
 }

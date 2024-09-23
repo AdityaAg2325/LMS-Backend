@@ -19,7 +19,10 @@ public class Book {
     private String author;
 
     @Column(nullable = false)
-    private Long quantity;
+    private Long quantity = 1L;
+
+    @Column(name = "curr_qty", nullable = false)
+    private Long currQty = 0L;
 
     private String image;
 
